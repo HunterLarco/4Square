@@ -18,7 +18,7 @@ body{
 }
 
 .max-width{
-  margin:50px;
+  margin:50px 20px;
   
   display:inline-block;
   text-align:left;
@@ -72,10 +72,6 @@ body{
 .square_dest{
   display:inline-block;
   
-  width:80px;
-  height:80px;
-  line-height:80px;
-  
   vertical-align:middle;
   
   box-shadow:inset 1px 1px 0px 1px rgb(200,200,200);
@@ -90,16 +86,19 @@ body{
   cursor:default;
 }
 
+.square,
+.square_dest{
+  width:      80px;
+  height:     80px;
+  line-height:80px;
+}
+
 .square{
   position:absolute;
   top:-100px;
   left:-100px;
   
   z-index:998;
-  
-  width:80px;
-  height:80px;
-  line-height:80px;
   
   background:rgb(232,78,78);
   color:rgb(255,255,255);
@@ -150,11 +149,60 @@ h2{
   color:rgb(51,51,51);
 }
 
+@media (max-width: 430px){
+  .square,
+  .square_dest{
+    width:      75px;
+    height:     75px;
+    line-height:75px;
+  }
+}
+@media (max-width: 410px){
+  .square,
+  .square_dest{
+    width:      70px;
+    height:     70px;
+    line-height:70px;
+  }
+}
+@media (max-width: 390px){
+  .square,
+  .square_dest{
+    width:      65px;
+    height:     65px;
+    line-height:65px;
+  }
+}
+@media (max-width: 370px){
+  .square,
+  .square_dest{
+    width:      60px;
+    height:     60px;
+    line-height:60px;
+  }
+}
+@media (max-width: 350px){
+  .square,
+  .square_dest{
+    width:      55px;
+    height:     55px;
+    line-height:55px;
+  }
+}
+@media (max-width: 330px){
+  .square,
+  .square_dest{
+    width:      50px;
+    height:     50px;
+    line-height:50px;
+  }
+}
+
 </style>
 <html>
 <head>
 
-<title>4Square | The Fun Word Game</title>
+<title>4x4 | The Fun Word Game</title>
 
 <meta charset="utf-8" />
 <meta content="yes" name="apple-mobile-web-app-capable" />
@@ -174,7 +222,7 @@ h2{
 
 <div class='max-width'>
   <div class='header'>
-    <h1>4Square</h1>
+    <h1>4x4</h1>
     <!-- css problem -->
     <div class='timer'>0:00</div>
   </div>
@@ -198,6 +246,10 @@ h2{
   </div>
   <h2>Drop Space</h2>
   <div class='squares dock'>
+    <div class='square_dest'></div>
+    <div class='square_dest'></div>
+    <div class='square_dest'></div>
+    <div class='square_dest'></div><br/>
     <div class='square_dest'></div>
     <div class='square_dest'></div>
     <div class='square_dest'></div>
