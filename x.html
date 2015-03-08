@@ -222,7 +222,7 @@ h2{
 
 <div class='max-width'>
   <div class='header'>
-    <h1>4x4</h1>
+    <h1>5x5</h1>
     <!-- css problem -->
     <div class='timer'>0:00</div>
   </div>
@@ -230,15 +230,24 @@ h2{
     <div class='square_dest'></div>
     <div class='square_dest'></div>
     <div class='square_dest'></div>
-    <div class='square_dest'></div><br/>
-    <div class='square_dest'></div>
-    <div class='square_dest'></div>
     <div class='square_dest'></div>
     <div class='square_dest'></div><br/>
     <div class='square_dest'></div>
     <div class='square_dest'></div>
     <div class='square_dest'></div>
+    <div class='square_dest'></div>
     <div class='square_dest'></div><br/>
+    <div class='square_dest'></div>
+    <div class='square_dest'></div>
+    <div class='square_dest'></div>
+    <div class='square_dest'></div>
+    <div class='square_dest'></div><br/>
+    <div class='square_dest'></div>
+    <div class='square_dest'></div>
+    <div class='square_dest'></div>
+    <div class='square_dest'></div>
+    <div class='square_dest'></div><br/>
+    <div class='square_dest'></div>
     <div class='square_dest'></div>
     <div class='square_dest'></div>
     <div class='square_dest'></div>
@@ -249,7 +258,9 @@ h2{
     <div class='square_dest'></div>
     <div class='square_dest'></div>
     <div class='square_dest'></div>
+    <div class='square_dest'></div>
     <div class='square_dest'></div><br/>
+    <div class='square_dest'></div>
     <div class='square_dest'></div>
     <div class='square_dest'></div>
     <div class='square_dest'></div>
@@ -434,8 +445,8 @@ h2{
   var dict;
   var starttime;
   
-  const width = 4;
-  const height = 4;
+  const width = 5;
+  const height = 5;
   
   function LoadDictionary(loc, callback){
     Get(loc, function OnSuccess(event){
@@ -558,11 +569,11 @@ h2{
         indicies = [];
     
     for(var i=0; i<letters.length; i++)
-      if(i%width != Math.floor(i/width))
+      if(i%width != Math.floor(i/width) && width-i%width-1 != Math.floor(i/width))
         indicies.push(i);
     
     for(var i=0; i<letters.length; i++){
-      if(i%width == Math.floor(i/width)){
+      if(i%width == Math.floor(i/width) || width-i%width-1 == Math.floor(i/width)){
         rand[i] = letters[i];
       }else{
         var index = Math.floor(Math.random()*indicies.length);
@@ -575,7 +586,7 @@ h2{
       var target = targets[i];
       
       var tile = new Tile(rand[i]);
-      if(i%width == Math.floor(i/width)) tile.setMovable(false);
+      if(i%width == Math.floor(i/width) || width-i%width-1 == Math.floor(i/width)) tile.setMovable(false);
       
       tile.snapTo(target);
       
@@ -604,7 +615,7 @@ h2{
   
   function Init(){
     console.log('Loading Dictionary');
-    LoadDictionary('/resources/dict_4.txt', CreateGame);
+    LoadDictionary('/resources/dict_5.txt', CreateGame);
   }
   
 })();

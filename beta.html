@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<style>
+
+body{
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  
+	-webkit-font-smoothing:antialiased;
+  
+  font-weight:300;
+  font-family:Helvetica;
+  
+  text-align:center;
+}
+
+.header{
+  background:rgb(0,188,212);
+  
+  padding:20px;
+  
+  text-align:left;
+  
+  position:relative;
+}
+.header:after{
+  visibility:hidden;
+  display:block;
+  font-size:0;
+  content:' ';
+  clear:both;
+  height:0;
+}
+.header .timer{
+  float:right;
+  
+  display:block;
+  vertical-align:middle;
+  
+  border:4px dashed rgba(255,255,255,0.75);
+	-webkit-border-radius: 3px;
+	-moz-border-radius:    3px;
+	border-radius:         3px;
+  
+  color:rgb(255,255,255);
+  
+  font-size:30px;
+  font-weight:700;
+  
+  padding:12px 26px;
+  min-width:70px;
+  
+  text-align:center;
+}
+.header .menu{
+  position:absolute;
+  left:20px;
+  top:50%;
+  
+  -webkit-transform:translate(0, -50%);
+  -moz-transform:   translate(0, -50%);
+  -mos-transform:   translate(0, -50%);
+  -o-transform:     translate(0, -50%);
+  transform:        translate(0, -50%);
+  
+  background:transparent center center no-repeat;
+  background-size:48px 48px;
+  background-image:url(/images/hamburger.svg);
+  
+  width: 48px;
+  height:48px;
+  
+  cursor:pointer;
+}
+
+.board{
+  margin:50px;
+}
+
+square\:dest{
+  display:inline-block;
+  
+  vertical-align:middle;
+  
+  box-shadow:inset 1px 1px 0px 1px rgb(210,210,210);
+  background:rgb(230,230,230);
+  
+	-webkit-border-radius: 3px;
+	-moz-border-radius:    3px;
+	border-radius:         3px;
+  overflow:hidden;
+  
+  margin:6px;
+  
+  cursor:default;
+}
+square\:dest square,
+square\:moving{
+  display:block;
+  
+  background:rgb(232,48,108);
+  color:rgb(255,255,255);
+  
+  height:100%;
+  width:100%;
+  
+  font-family:Arial;
+  font-size:30px;
+  font-weight:700;
+  text-align:center;
+  text-transform:uppercase;
+  
+  cursor:move;
+}
+square\:dest square.moving{
+  display:none;
+}
+square\:dest square.locked{
+  cursor:not-allowed;
+  
+  background:rgb(146,160,160);
+}
+square\:dest,
+square\:moving{
+  height:     80px;
+  width:      80px;
+  line-height:80px;
+}
+square\:moving{
+  position:absolute;
+  
+  z-index:999;
+  
+	-webkit-border-radius: 3px;
+	-moz-border-radius:    3px;
+	border-radius:         3px;
+
+  -webkit-animation: animation 1000ms linear both;
+  animation:         animation 1000ms linear both;
+}
+
+/* Bounce.js */
+@keyframes animation{
+  0%{
+    box-shadow:0 0 0 transparent;
+    -webkit-transform:matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
+  }
+  3.4%{
+    -webkit-transform:matrix3d(1.095,0,0,0,0,1.122,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.095,0,0,0,0,1.122,0,0,0,0,1,0,0,0,0,1);
+  }
+  4.7%{
+    -webkit-transform:matrix3d(1.135,0,0,0,0,1.18,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.135,0,0,0,0,1.18,0,0,0,0,1,0,0,0,0,1);
+  }
+  6.81%{
+    -webkit-transform:matrix3d(1.198,0,0,0,0,1.268,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.198,0,0,0,0,1.268,0,0,0,0,1,0,0,0,0,1);
+  }
+  9.41%{
+    -webkit-transform:matrix3d(1.265,0,0,0,0,1.35,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.265,0,0,0,0,1.35,0,0,0,0,1,0,0,0,0,1);
+  }
+  10.21%{
+    -webkit-transform:matrix3d(1.282,0,0,0,0,1.368,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.282,0,0,0,0,1.368,0,0,0,0,1,0,0,0,0,1);
+  }
+  13.61%{
+    -webkit-transform:matrix3d(1.337,0,0,0,0,1.4,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.337,0,0,0,0,1.4,0,0,0,0,1,0,0,0,0,1);
+  }
+  14.11%{
+    -webkit-transform:matrix3d(1.342,0,0,0,0,1.399,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.342,0,0,0,0,1.399,0,0,0,0,1,0,0,0,0,1);
+  }
+  17.52%{
+    -webkit-transform:matrix3d(1.362,0,0,0,0,1.372,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.362,0,0,0,0,1.372,0,0,0,0,1,0,0,0,0,1);
+  }
+  18.72%{
+    -webkit-transform:matrix3d(1.364,0,0,0,0,1.356,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.364,0,0,0,0,1.356,0,0,0,0,1,0,0,0,0,1);
+  }
+  21.32%{
+    -webkit-transform:matrix3d(1.359,0,0,0,0,1.321,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.359,0,0,0,0,1.321,0,0,0,0,1,0,0,0,0,1);
+  }
+  24.32%{
+    -webkit-transform:matrix3d(1.345,0,0,0,0,1.288,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.345,0,0,0,0,1.288,0,0,0,0,1,0,0,0,0,1);
+  }
+  25.23%{
+    -webkit-transform:matrix3d(1.34,0,0,0,0,1.281,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.34,0,0,0,0,1.281,0,0,0,0,1,0,0,0,0,1);
+  }
+  29.03%{
+  box-shadow:0 0 20px rgba(0,0,0,0.3);
+    -webkit-transform:matrix3d(1.319,0,0,0,0,1.269,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.319,0,0,0,0,1.269,0,0,0,0,1,0,0,0,0,1);
+  }
+  29.93%{
+    -webkit-transform:matrix3d(1.314,0,0,0,0,1.27,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.314,0,0,0,0,1.27,0,0,0,0,1,0,0,0,0,1);
+  }
+  35.54%{
+    -webkit-transform:matrix3d(1.294,0,0,0,0,1.289,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.294,0,0,0,0,1.289,0,0,0,0,1,0,0,0,0,1);
+  }
+  36.74%{
+    -webkit-transform:matrix3d(1.291,0,0,0,0,1.294,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.291,0,0,0,0,1.294,0,0,0,0,1,0,0,0,0,1);
+  }
+  41.04%{
+    -webkit-transform:matrix3d(1.288,0,0,0,0,1.307,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.288,0,0,0,0,1.307,0,0,0,0,1,0,0,0,0,1);
+  }
+  44.44%{
+    -webkit-transform:matrix3d(1.29,0,0,0,0,1.31,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.29,0,0,0,0,1.31,0,0,0,0,1,0,0,0,0,1);
+  }
+  52.15%{
+    -webkit-transform:matrix3d(1.297,0,0,0,0,1.302,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.297,0,0,0,0,1.302,0,0,0,0,1,0,0,0,0,1);
+  }
+  59.86%{
+    -webkit-transform:matrix3d(1.302,0,0,0,0,1.297,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.302,0,0,0,0,1.297,0,0,0,0,1,0,0,0,0,1);
+  }
+  63.26%{
+    -webkit-transform:matrix3d(1.302,0,0,0,0,1.298,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.302,0,0,0,0,1.298,0,0,0,0,1,0,0,0,0,1);
+  }
+  75.28%{
+    -webkit-transform:matrix3d(1.3,0,0,0,0,1.301,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.3,0,0,0,0,1.301,0,0,0,0,1,0,0,0,0,1);
+  }
+  85.49%{
+    -webkit-transform:matrix3d(1.3,0,0,0,0,1.3,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.3,0,0,0,0,1.3,0,0,0,0,1,0,0,0,0,1);
+  }
+  90.69%{
+    -webkit-transform:matrix3d(1.3,0,0,0,0,1.3,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.3,0,0,0,0,1.3,0,0,0,0,1,0,0,0,0,1);
+  }
+  100%{
+    box-shadow:0 0 20px rgba(0,0,0,0.3);
+    -webkit-transform:matrix3d(1.3,0,0,0,0,1.3,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.3,0,0,0,0,1.3,0,0,0,0,1,0,0,0,0,1);
+  }
+}
+@-webkit-keyframes animation{
+  0%{
+    box-shadow:0 0 0 transparent;
+    -webkit-transform:matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
+  }
+  3.4%{
+    -webkit-transform:matrix3d(1.095,0,0,0,0,1.122,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.095,0,0,0,0,1.122,0,0,0,0,1,0,0,0,0,1);
+  }
+  4.7%{
+    -webkit-transform:matrix3d(1.135,0,0,0,0,1.18,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.135,0,0,0,0,1.18,0,0,0,0,1,0,0,0,0,1);
+  }
+  6.81%{
+    -webkit-transform:matrix3d(1.198,0,0,0,0,1.268,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.198,0,0,0,0,1.268,0,0,0,0,1,0,0,0,0,1);
+  }
+  9.41%{
+    -webkit-transform:matrix3d(1.265,0,0,0,0,1.35,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.265,0,0,0,0,1.35,0,0,0,0,1,0,0,0,0,1);
+  }
+  10.21%{
+    -webkit-transform:matrix3d(1.282,0,0,0,0,1.368,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.282,0,0,0,0,1.368,0,0,0,0,1,0,0,0,0,1);
+  }
+  13.61%{
+    -webkit-transform:matrix3d(1.337,0,0,0,0,1.4,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.337,0,0,0,0,1.4,0,0,0,0,1,0,0,0,0,1);
+  }
+  14.11%{
+    -webkit-transform:matrix3d(1.342,0,0,0,0,1.399,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.342,0,0,0,0,1.399,0,0,0,0,1,0,0,0,0,1);
+  }
+  17.52%{
+    -webkit-transform:matrix3d(1.362,0,0,0,0,1.372,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.362,0,0,0,0,1.372,0,0,0,0,1,0,0,0,0,1);
+  }
+  18.72%{
+    -webkit-transform:matrix3d(1.364,0,0,0,0,1.356,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.364,0,0,0,0,1.356,0,0,0,0,1,0,0,0,0,1);
+  }
+  21.32%{
+    -webkit-transform:matrix3d(1.359,0,0,0,0,1.321,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.359,0,0,0,0,1.321,0,0,0,0,1,0,0,0,0,1);
+  }
+  24.32%{
+    -webkit-transform:matrix3d(1.345,0,0,0,0,1.288,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.345,0,0,0,0,1.288,0,0,0,0,1,0,0,0,0,1);
+  }
+  25.23%{
+    -webkit-transform:matrix3d(1.34,0,0,0,0,1.281,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.34,0,0,0,0,1.281,0,0,0,0,1,0,0,0,0,1);
+  }
+  29.03%{
+    box-shadow:0 0 20px rgba(0,0,0,0.3);
+    -webkit-transform:matrix3d(1.319,0,0,0,0,1.269,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.319,0,0,0,0,1.269,0,0,0,0,1,0,0,0,0,1);
+  }
+  29.93%{
+    -webkit-transform:matrix3d(1.314,0,0,0,0,1.27,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.314,0,0,0,0,1.27,0,0,0,0,1,0,0,0,0,1);
+  }
+  35.54%{
+    -webkit-transform:matrix3d(1.294,0,0,0,0,1.289,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.294,0,0,0,0,1.289,0,0,0,0,1,0,0,0,0,1);
+  }
+  36.74%{
+    -webkit-transform:matrix3d(1.291,0,0,0,0,1.294,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.291,0,0,0,0,1.294,0,0,0,0,1,0,0,0,0,1);
+  }
+  41.04%{
+    -webkit-transform:matrix3d(1.288,0,0,0,0,1.307,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.288,0,0,0,0,1.307,0,0,0,0,1,0,0,0,0,1);
+  }
+  44.44%{
+    -webkit-transform:matrix3d(1.29,0,0,0,0,1.31,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.29,0,0,0,0,1.31,0,0,0,0,1,0,0,0,0,1);
+  }
+  52.15%{
+    -webkit-transform:matrix3d(1.297,0,0,0,0,1.302,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.297,0,0,0,0,1.302,0,0,0,0,1,0,0,0,0,1);
+  }
+  59.86%{
+    -webkit-transform:matrix3d(1.302,0,0,0,0,1.297,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.302,0,0,0,0,1.297,0,0,0,0,1,0,0,0,0,1);
+  }
+  63.26%{
+    -webkit-transform:matrix3d(1.302,0,0,0,0,1.298,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.302,0,0,0,0,1.298,0,0,0,0,1,0,0,0,0,1);
+  }
+  75.28%{
+    -webkit-transform:matrix3d(1.3,0,0,0,0,1.301,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.3,0,0,0,0,1.301,0,0,0,0,1,0,0,0,0,1);
+  }
+  85.49%{
+    -webkit-transform:matrix3d(1.3,0,0,0,0,1.3,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.3,0,0,0,0,1.3,0,0,0,0,1,0,0,0,0,1);
+  }
+  90.69%{
+    -webkit-transform:matrix3d(1.3,0,0,0,0,1.3,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.3,0,0,0,0,1.3,0,0,0,0,1,0,0,0,0,1);
+  }
+  100%{
+    box-shadow:0 0 20px rgba(0,0,0,0.3);
+    -webkit-transform:matrix3d(1.3,0,0,0,0,1.3,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.3,0,0,0,0,1.3,0,0,0,0,1,0,0,0,0,1);
+  }
+}
+
+.drop h2{
+  text-transform:uppercase;
+  font-size:12px;
+  font-weight:700;
+  text-align:center;
+  
+  color:rgb(51,51,51);
+}
+
+
+
+</style>
+<html>
+<head>
+
+<title>4x4 | The Fun Word Game</title>
+
+<meta charset="utf-8" />
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+
+<meta content="minimum-scale=1.0, width=device-width, maximum-scale=1, user-scalable=no" name="viewport"/>
+
+<link rel="stylesheet" href="/resources/css/resets.css"/>
+<script src='/resources/Scripts/Overload.min.js'></script>
+<script src='/resources/Scripts/classie.js'></script>
+
+</head>
+<body>
+
+
+<div class='header'>
+  <div class='menu'></div>
+  <div class='timer'>0:00</div>
+</div>
+
+<div class='board'></div>
+
+<div class='drop'>
+  <h2>dropspace</h2>
+</div>
+
+
+<script type='text/javascript'>
+(function(){
+  
+  function Square(){
+    var self = this;
+    var undefined;
+    
+    var letter = '', html;
+    var mover;
+    
+    var movable = true;
+    var touch;
+    
+    var currentdest;
+    
+    self.setLetter = SetLetter;
+    self.getLetter = GetLetter;
+    
+    self.setMovable = SetMovable;
+    self.getMovable = GetMovable;
+    
+    self.snapTo = SnapTo;
+    
+    self.getHTML = GetHTML;
+    
+    function SetLetter(l){
+      var old = letter;
+      letter = l;
+      
+      html.innerHTML = letter;
+      
+      return old;
+    }
+    function GetLetter(){
+      return letter;
+    }
+    
+    function SetMovable(bool){
+      var old = movable;
+      movable = bool;
+      
+      if(!movable) classie.add(html, 'locked');
+      else classie.remove(html, 'locked');
+      
+      return movable;
+    }
+    function GetMovable(){
+      return movable;
+    }
+    
+    function SnapTo(dest){
+      dest.getHTML().appendChild(html);
+      currentdest = dest;
+    }
+    
+    function GetHTML(){
+      return html;
+    }
+    
+    function CreateHTML(){
+      html = document.createElement('square');
+      html.innerHTML = letter;
+      
+      if(!movable) classie.add(html, 'locked');
+      
+      Bind();
+    }
+    function Bind(){
+      html.addEventListener('touchstart', PickUp);
+    }
+    function PickUp(event){
+      event.preventDefault();
+      if(!GetMovable()) return;
+      
+      CreateMover(event);
+      
+      window.addEventListener('touchmove', OnMove);
+      window.addEventListener('touchcancel', PutDown);
+      window.addEventListener('touchend', PutDown);
+    }
+    function OnMove(event){
+      event.preventDefault();
+      
+      UpdateMover(event);
+    }
+    function PutDown(event){
+      AutoSnap();
+      
+      RemoveMover();
+      
+      window.removeEventListener('touchmove', OnMove);
+      window.removeEventListener('touchcancel', PutDown);
+      window.removeEventListener('touchend', PutDown);
+    }
+    
+    function CreateMover(event){
+      var coords = html.parentElement.getBoundingClientRect();
+      
+      mover = document.createElement('square:moving');
+      mover.innerHTML = html.innerHTML;
+      
+      mover.style.top = coords.top+'px';
+      mover.style.left = coords.left+'px';
+      
+      mover.style.width = html.offsetWidth+'px';
+      mover.style.height = html.offsetHeight+'px';
+      mover.style.lineHeight = html.offsetHeight+'px';
+      
+      document.body.appendChild(mover);
+      classie.add(html, 'moving');
+      
+      UpdateMover(event);
+    }
+    function UpdateMover(event){
+      if(event.targetTouches.length == 0) return;
+      
+      var touches = event.targetTouches,
+          x = touches[0].clientX,
+          y = touches[0].clientY;
+      
+      if(touch == undefined){
+        touch = {lx:x, ly:y};
+        return;
+      }
+      
+      var dx = x - touch.lx,
+          dy = y - touch.ly;
+      touch = {lx:x, ly:y};
+      
+      mover.style.top = (mover.offsetTop+dy) + 'px';
+      mover.style.left = (mover.offsetLeft+dx) + 'px';
+    }
+    function RemoveMover(){
+      document.body.removeChild(mover);
+      
+      mover = undefined;
+      touch = undefined;
+    }
+    function AutoSnap(){
+      classie.remove(html, 'moving');
+      
+      var mover_center = {
+        x: mover.offsetLeft + mover.offsetWidth/2,
+        y: mover.offsetTop + mover.offsetHeight/2
+      }
+      
+      var diagonal = Math.sqrt(Math.pow(mover.offsetWidth,2)+Math.pow(mover.offsetHeight,2));
+      var dests = SquareDest.getAll();
+      
+      var min_dist, min;
+      
+      for(var i=0,dest; dest=dests[i++];){
+        var dest_frame = dest.getHTML(),
+            dest_center = {
+              x: dest_frame.offsetLeft + dest_frame.offsetWidth/2,
+              y: dest_frame.offsetTop + dest_frame.offsetHeight/2
+            },
+            dist = Math.sqrt(
+              Math.pow(dest_center.x - mover_center.x,2)+
+              Math.pow(dest_center.y - mover_center.y,2)
+            );
+        if(dist < diagonal && (dist < min_dist || min == undefined) && (dest.canSnap() || dest == currentdest)){
+          min_dist = dist;
+          min = dest;
+        }
+      }
+      
+      if(min != undefined && dest != currentdest){
+        currentdest.unsnap();
+        min.snap(self);
+      }
+    }
+    
+    var Constructor = Overload.function();
+    Constructor.overload(function(){this('');});
+    Constructor.overload(function(ismovable){this('', ismovable);}, ['boolean']);
+    Constructor.overload(function(letter){this(letter, true);}, ['string']);
+    Constructor.overload(function(_letter, _movable){
+      letter = _letter;
+      movable = _movable;
+      CreateHTML();
+    }, ['string', 'boolean']);
+    Constructor.apply(this, arguments);
+  }
+  
+  var total_dests = [];
+  
+  function SquareDest(){
+    var self = this;
+    var undefined;
+    
+    var frame, html;
+    var square;
+    
+    self.snap = Snap;
+    self.canSnap = CanSnap;
+    self.unsnap = UnSnap;
+    
+    self.hasSquare = HasSquare;
+    self.getSquare = GetSquare;
+    
+    self.getHTML = GetHTML;
+    
+    function Snap(_square){
+      if(_square == undefined) return false;
+      if(HasSquare()) return false;
+      
+      square = _square;
+      square.snapTo(self);
+      
+      return true;
+    }
+    function CanSnap(){
+      return !HasSquare();
+    }
+    function UnSnap(){
+      html.removeChild(square.getHTML());
+      square = undefined;
+    }
+    
+    function HasSquare(){
+      return square != undefined;
+    }
+    function GetSquare(){
+      return square;
+    }
+    
+    function GetHTML(){
+      return html;
+    }
+    
+    function CreateHTML(){
+      html = document.createElement('square:dest');
+      frame.appendChild(html);
+    }
+    
+    (function Constructor(_frame){
+      frame = _frame;
+      CreateHTML();
+      
+      total_dests.push(self);
+    }).apply(this, arguments);
+  }
+  
+  SquareDest.getAll = function GetAll(){
+    return total_dests;
+  }
+  
+  
+  
+  window.addEventListener('load', Init);
+  
+  function Init(){
+    CreateBoard(3, 3);
+  }
+  function CreateBoard(width, height){
+    var board = document.querySelector('.board');
+    for(var i=0; i<width*height; i++){
+      if(i%width == 0 && i != 0) board.appendChild(document.createElement('br'));
+      var square = new Square('z');
+      new SquareDest(board).snap(square);
+    }
+    
+    var drop = document.querySelector('.drop');
+    for(var i=0; i<width*Math.floor(height/2); i++){
+      if(i%width == 0 && i != 0) drop.appendChild(document.createElement('br'));
+      new SquareDest(drop);
+    }
+  }
+  
+})();
+</script>
+</body>
+</html>
