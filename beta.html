@@ -387,8 +387,16 @@ square\:moving{
 <meta content="minimum-scale=1.0, width=device-width, maximum-scale=1, user-scalable=no" name="viewport"/>
 
 <link rel="stylesheet" href="/resources/css/resets.css"/>
-<script src='/resources/Scripts/Overload.min.js'></script>
-<script src='/resources/Scripts/classie.js'></script>
+
+<script src='/resources/scripts/util/Overload.min.js'></script>
+<script src='/resources/scripts/util/classie.js'></script>
+<script src='/resources/scripts/util/Post.js'></script>
+<script src='/resources/scripts/util/TrieTree.js'></script>
+
+<script src='/resources/scripts/Board.js'></script>
+<script src='/resources/scripts/Game.js'></script>
+<script src='/resources/scripts/Square.js'></script>
+<script src='/resources/scripts/SquareDest.js'></script>
 
 </head>
 <body>
@@ -409,249 +417,30 @@ square\:moving{
 <script type='text/javascript'>
 (function(){
   
-  function Square(){
+  function Game(){
     var self = this;
     var undefined;
     
-    var letter = '', html;
-    var mover;
+    var board, drop;
     
-    var movable = true;
-    var touch;
+    self.create = Create;
     
-    var currentdest;
-    
-    self.setLetter = SetLetter;
-    self.getLetter = GetLetter;
-    
-    self.setMovable = SetMovable;
-    self.getMovable = GetMovable;
-    
-    self.snapTo = SnapTo;
-    
-    self.getHTML = GetHTML;
-    
-    function SetLetter(l){
-      var old = letter;
-      letter = l;
+    function GeneratePuzzle(width, height){
       
-      html.innerHTML = letter;
-      
-      return old;
-    }
-    function GetLetter(){
-      return letter;
     }
     
-    function SetMovable(bool){
-      var old = movable;
-      movable = bool;
+    function Create(width, height){
+      board.resize(width, height);
+      drop.resize(width, Math.floor(height/2));
       
-      if(!movable) classie.add(html, 'locked');
-      else classie.remove(html, 'locked');
-      
-      return movable;
-    }
-    function GetMovable(){
-      return movable;
+      // var puzzle = GeneratePuzzle(width, height);
+      // board.setValue(puzzle);
     }
     
-    function SnapTo(dest){
-      dest.getHTML().appendChild(html);
-      currentdest = dest;
-    }
-    
-    function GetHTML(){
-      return html;
-    }
-    
-    function CreateHTML(){
-      html = document.createElement('square');
-      html.innerHTML = letter;
-      
-      if(!movable) classie.add(html, 'locked');
-      
-      Bind();
-    }
-    function Bind(){
-      html.addEventListener('touchstart', PickUp);
-    }
-    function PickUp(event){
-      event.preventDefault();
-      if(!GetMovable()) return;
-      
-      CreateMover(event);
-      
-      window.addEventListener('touchmove', OnMove);
-      window.addEventListener('touchcancel', PutDown);
-      window.addEventListener('touchend', PutDown);
-    }
-    function OnMove(event){
-      event.preventDefault();
-      
-      UpdateMover(event);
-    }
-    function PutDown(event){
-      AutoSnap();
-      
-      RemoveMover();
-      
-      window.removeEventListener('touchmove', OnMove);
-      window.removeEventListener('touchcancel', PutDown);
-      window.removeEventListener('touchend', PutDown);
-    }
-    
-    function CreateMover(event){
-      var coords = html.parentElement.getBoundingClientRect();
-      
-      mover = document.createElement('square:moving');
-      mover.innerHTML = html.innerHTML;
-      
-      mover.style.top = coords.top+'px';
-      mover.style.left = coords.left+'px';
-      
-      mover.style.width = html.offsetWidth+'px';
-      mover.style.height = html.offsetHeight+'px';
-      mover.style.lineHeight = html.offsetHeight+'px';
-      
-      document.body.appendChild(mover);
-      classie.add(html, 'moving');
-      
-      UpdateMover(event);
-    }
-    function UpdateMover(event){
-      if(event.targetTouches.length == 0) return;
-      
-      var touches = event.targetTouches,
-          x = touches[0].clientX,
-          y = touches[0].clientY;
-      
-      if(touch == undefined){
-        touch = {lx:x, ly:y};
-        return;
-      }
-      
-      var dx = x - touch.lx,
-          dy = y - touch.ly;
-      touch = {lx:x, ly:y};
-      
-      mover.style.top = (mover.offsetTop+dy) + 'px';
-      mover.style.left = (mover.offsetLeft+dx) + 'px';
-    }
-    function RemoveMover(){
-      document.body.removeChild(mover);
-      
-      mover = undefined;
-      touch = undefined;
-    }
-    function AutoSnap(){
-      classie.remove(html, 'moving');
-      
-      var mover_center = {
-        x: mover.offsetLeft + mover.offsetWidth/2,
-        y: mover.offsetTop + mover.offsetHeight/2
-      }
-      
-      var diagonal = Math.sqrt(Math.pow(mover.offsetWidth,2)+Math.pow(mover.offsetHeight,2));
-      var dests = SquareDest.getAll();
-      
-      var min_dist, min;
-      
-      for(var i=0,dest; dest=dests[i++];){
-        var dest_frame = dest.getHTML(),
-            dest_center = {
-              x: dest_frame.offsetLeft + dest_frame.offsetWidth/2,
-              y: dest_frame.offsetTop + dest_frame.offsetHeight/2
-            },
-            dist = Math.sqrt(
-              Math.pow(dest_center.x - mover_center.x,2)+
-              Math.pow(dest_center.y - mover_center.y,2)
-            );
-        if(dist < diagonal && (dist < min_dist || min == undefined) && (dest.canSnap() || dest == currentdest)){
-          min_dist = dist;
-          min = dest;
-        }
-      }
-      
-      if(min != undefined && dest != currentdest){
-        currentdest.unsnap();
-        min.snap(self);
-      }
-    }
-    
-    var Constructor = Overload.function();
-    Constructor.overload(function(){this('');});
-    Constructor.overload(function(ismovable){this('', ismovable);}, ['boolean']);
-    Constructor.overload(function(letter){this(letter, true);}, ['string']);
-    Constructor.overload(function(_letter, _movable){
-      letter = _letter;
-      movable = _movable;
-      CreateHTML();
-    }, ['string', 'boolean']);
-    Constructor.apply(this, arguments);
-  }
-  
-  var total_dests = [];
-  
-  function SquareDest(){
-    var self = this;
-    var undefined;
-    
-    var frame, html;
-    var square;
-    
-    self.snap = Snap;
-    self.canSnap = CanSnap;
-    self.unsnap = UnSnap;
-    
-    self.hasSquare = HasSquare;
-    self.getSquare = GetSquare;
-    
-    self.getHTML = GetHTML;
-    
-    function Snap(_square){
-      if(_square == undefined) return false;
-      if(HasSquare()) return false;
-      
-      square = _square;
-      square.snapTo(self);
-      
-      return true;
-    }
-    function CanSnap(){
-      return !HasSquare();
-    }
-    function UnSnap(){
-      html.removeChild(square.getHTML());
-      square = undefined;
-    }
-    
-    function HasSquare(){
-      return square != undefined;
-    }
-    function GetSquare(){
-      return square;
-    }
-    
-    function GetHTML(){
-      return html;
-    }
-    
-    function CreateHTML(){
-      html = document.createElement('square:dest');
-      frame.appendChild(html);
-    }
-    
-    (function Constructor(_frame){
-      frame = _frame;
-      CreateHTML();
-      
-      total_dests.push(self);
+    (function Constructor(board_frame, drop_frame){
+      board = new Board(board_frame);
+      drop = new Board(drop_frame);
     }).apply(this, arguments);
-  }
-  
-  SquareDest.getAll = function GetAll(){
-    return total_dests;
   }
   
   
@@ -659,21 +448,8 @@ square\:moving{
   window.addEventListener('load', Init);
   
   function Init(){
-    CreateBoard(3, 3);
-  }
-  function CreateBoard(width, height){
-    var board = document.querySelector('.board');
-    for(var i=0; i<width*height; i++){
-      if(i%width == 0 && i != 0) board.appendChild(document.createElement('br'));
-      var square = new Square('z');
-      new SquareDest(board).snap(square);
-    }
-    
-    var drop = document.querySelector('.drop');
-    for(var i=0; i<width*Math.floor(height/2); i++){
-      if(i%width == 0 && i != 0) drop.appendChild(document.createElement('br'));
-      new SquareDest(drop);
-    }
+    var game = new Game(document.querySelector('.board'), document.querySelector('.drop'));
+    game.create(3,3);
   }
   
 })();
