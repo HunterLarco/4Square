@@ -55,7 +55,7 @@ body{
   
   text-align:center;
 }
-.header .menu{
+.header .menubutton{
   position:absolute;
   left:20px;
   top:50%;
@@ -77,7 +77,7 @@ body{
 }
 
 .board{
-  margin:50px;
+  margin:80px 20px;
 }
 
 square\:dest{
@@ -371,7 +371,52 @@ square\:moving{
   color:rgb(51,51,51);
 }
 
-
+.menu{
+  position:fixed;
+  top:0px;
+  left:0px;
+  right:0px;
+  bottom:0px;
+  
+  -webkit-transform:translate(-100%, 0);
+     -mos-transform:translate(-100%, 0);
+     -moz-transform:translate(-100%, 0);
+       -o-transform:translate(-100%, 0);
+          transform:translate(-100%, 0);
+  
+  -webkit-transition:all 400ms;
+     -mos-transition:all 400ms;
+     -moz-transition:all 400ms;
+       -o-transition:all 400ms;
+          transition:all 400ms;
+  
+  background:rgb(0,188,212);
+  
+  padding-top:200px;
+  
+  font-size:24px;
+  font-weight:400;
+  
+  color:rgb(51,51,51);
+  text-align:center;
+}
+.menu.open{
+  -webkit-transform:translate(0%, 0);
+  -mos-transform:   translate(0%, 0);
+  -moz-transform:   translate(0%, 0);
+  -o-transform:     translate(0%, 0);
+  transform:        translate(0%, 0);
+}
+.menu h2,
+.menu h3{
+  margin:0px;
+  padding:8px 0px;
+}
+.menu h2{
+  font-weight:700;
+  
+  padding:0px 0px 30px 0px;
+}
 
 </style>
 <html>
@@ -403,8 +448,16 @@ square\:moving{
 <body>
 
 
+<div class='menu'>
+  <h2>New Game</h2>
+  <h3 tag='easy'>Easy</h3>
+  <h3 tag='med'>Medium</h3>
+  <h3 tag='hard'>Hard</h3>
+  <h3 tag='imp'>Imposibru!</h3>
+</div>
+
 <div class='header'>
-  <div class='menu'></div>
+  <div class='menubutton'></div>
   <div class='timer'>0:00</div>
 </div>
 
@@ -417,174 +470,6 @@ square\:moving{
 
 <script type='text/javascript'>
 (function(){
-  
-  function Game(){
-    var self = this;
-    var undefined;
-    
-    var board, drop, timer;
-    var dict;
-    
-    var timer_isrunning, timer_start, timer_interval;
-    
-    self.create = Create;
-    
-    function CheckPuzzle(){
-      if(!IsValidPuzzle()) return;
-      
-      PauseTimer();
-      alert('You Won');
-    }
-    function IsValidPuzzle(){
-      var puzzle = board.getValue(),
-          rows = puzzle.map(function(value){return value.join('');}),
-          cols = [];
-      
-      for(var x=0; x<board.getWidth(); x++){
-        var col = '';
-        for(var y=0; y<board.getHeight(); y++)
-          col += puzzle[y][x] || '';
-        cols.push(col);
-      }
-      
-      var rows_valid = rows.filter(function(value){return dict.contains(value);}).length == board.getHeight(),
-          cols_valid = cols.filter(function(value){return dict.contains(value);}).length == board.getWidth();
-      
-      return rows_valid && cols_valid;
-    }
-    
-    function GeneratePuzzle(width, height){
-      var rows = [], cols = [], used = [];
-      
-      function Valid(str, len){
-        if(str.length == len){
-          if(used.indexOf(str) != -1) return false;
-          else return dict.contains(str);
-        }else{
-          var node = dict.get(str);
-          return !!node && node.hasChildren();
-        }
-      }
-      
-      function Intersect(arr1, arr2){
-        return arr1.filter(function(value){
-          return arr2.indexOf(value) != -1;
-        });
-      }
-      
-      function Recurse(index){
-        if(index == width*height) return rows[rows.length-1] != cols[cols.length-1];
-        
-        var row = Math.floor(index / width),
-            col = index - row * width;
-        
-        if(rows[row] == undefined) rows[row] = '';
-        if(cols[col] == undefined) cols[col] = '';
-        
-        var letters = Intersect(dict.get(rows[row]).getChildren(), dict.get(cols[col]).getChildren());
-        while(letters.length > 0){
-          var letter = letters.splice(Math.floor(Math.random()*letters.length), 1);
-          
-          rows[row] += letter;
-          cols[col] += letter;
-          
-          if(Valid(rows[row], width) && Valid(cols[col], height)){
-            if(rows[row].length == width) used.push(rows[row]);
-            if(cols[col].length == height) used.push(cols[col]);
-            if(Recurse(index+1)) return true;
-            if(rows[row].length == width) used.splice(-1,1);
-            if(cols[col].length == height) used.splice(-1,1);
-          }
-          
-          rows[row] = rows[row].slice(0,-1);
-          cols[col] = cols[col].slice(0,-1);
-          
-        }
-        
-        return false;
-      }
-      
-      Recurse(0);
-      
-      var puzzle = [];
-      for(var i=0,row; row=rows[i++];) puzzle.push(row.split(''));
-      return puzzle;
-    }
-    
-    function Create(width, height){
-      board.resize(width, height);
-      drop.resize(width, Math.floor(height/2));
-      
-      var puzzle = GeneratePuzzle(width, height);
-      
-      var indices = [], sudo_random = [];
-      
-      for(var y=0; y<board.getHeight(); y++)
-        for(var x=0; x<board.getWidth(); x++)
-          if(x != y){
-            indices.push({x:x, y:y});
-          }else{
-            if(!sudo_random[y]) sudo_random[y] = [];
-            sudo_random[y][x] = puzzle[y].splice(x, 1)[0];
-          }
-      
-      var letters = puzzle.reduce(function(prev, value){return prev.concat(value);});
-      while(indices.length > 0){
-        var index = indices.splice(Math.floor(Math.random()*indices.length), 1)[0];
-        sudo_random[index.y][index.x] = letters.shift();
-      }
-      
-      board.setValue(sudo_random);
-      
-      var cells = board.getCells();
-      for(var y=0; y<board.getHeight(); y++)
-        for(var x=0; x<board.getWidth(); x++)
-          if(x == y) cells[y][x].getSquare().setMovable(false);
-      
-      ResetTimer();
-      StartTimer();
-    }
-    
-    function StartTimer(){
-      if(timer_isrunning) return;
-      timer_isrunning = true;
-      
-      if(timer_start == undefined) timer_start = Date.now();
-      timer_interval = setInterval(UpdateTimer, 1000);
-    }
-    function PauseTimer(){
-      if(!timer_isrunning) return;
-      timer_isrunning = false;
-      
-      clearInterval(timer_interval);
-    }
-    function ResetTimer(){
-      timer_start = Date.now();
-    }
-    function UpdateTimer(){
-      var difftime = Date.now() - timer_start,
-          hours   = Math.floor((difftime % (60*60*60*1000))/(60*60*1000)),
-          minutes = Math.floor((difftime % (   60*60*1000))/(   60*1000)),
-          seconds = Math.floor((difftime % (      60*1000))/(      1000));
-  
-      if(seconds < 10) seconds = '0'+seconds;
-      if(hours > 0) if(minutes < 10) minutes = '0'+minutes;
-  
-      if(hours > 0) timer.innerHTML = hours+':'+minutes+':'+seconds;
-      else timer.innerHTML = minutes+':'+seconds;
-    }
-    
-    (function Constructor(dictionary, board_frame, drop_frame, timer_frame){
-      dict = dictionary;
-      
-      board = new Board(board_frame);
-      board.addEventListener('snap', CheckPuzzle);
-      
-      drop = new Board(drop_frame);
-      
-      timer = timer_frame;
-    }).apply(this, arguments);
-  }
   
   // pared by me from http://www-01.sil.org/linguistics/wordlists/english/wordlist/wordsEn.txt
   function LoadDictionary(callback){
@@ -610,15 +495,57 @@ square\:moving{
   window.addEventListener('load', Init);
   
   function Init(){
+    
+    var game;
+    
     LoadDictionary(function Callback(dict){
-      var game = new Game(
+      game = new Game(
         dict,
         document.querySelector('.board'),
         document.querySelector('.drop'),
         document.querySelector('.timer')
       );
+      
+      game.addEventListener('win', OnWin);
+      
       game.create(4,4);
     });
+    
+    function OnWin(){
+      setTimeout(function(){
+        alert('You Won!');
+      }, 150);
+    }
+    
+    document.querySelector('.header .menubutton').addEventListener('click', ToggleMenu);
+    function ToggleMenu(){
+      var menu = document.querySelector('.menu');
+      if(classie.has(menu, 'open')){
+        classie.remove(document.querySelector('.menu'), 'open');
+        if(!game.isComplete()) game.resume();
+      }else{
+        classie.add(document.querySelector('.menu'), 'open');
+        game.pause();
+      }
+    }
+    
+    document.querySelector('.menu *[tag=easy]').addEventListener('click', function(){
+      game.create(4,4);
+      ToggleMenu();
+    });
+    document.querySelector('.menu *[tag=med]').addEventListener('click', function(){
+      game.create(4,4);
+      ToggleMenu();
+    });
+    document.querySelector('.menu *[tag=hard]').addEventListener('click', function(){
+      game.create(4,4);
+      ToggleMenu();
+    });
+    document.querySelector('.menu *[tag=imp]').addEventListener('click', function(){
+      game.create(5,5);
+      ToggleMenu();
+    });
+    
   }
   
 })();
