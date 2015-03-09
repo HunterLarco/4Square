@@ -17,38 +17,35 @@ body{
   text-align:center;
 }
 
-.max-width{
-  margin:50px 20px;
-  
-  display:inline-block;
-  text-align:left;
-}
-
 .header{
-  text-align:right
+  background:rgb(0,188,212);
+  
+  padding:20px;
+  
+  text-align:left;
+  
+  position:relative;
 }
-.header h1{
-  display:inline-block;
-  vertical-align:middle;
-  
-  float:left;
-  
-  font-weight:700;
-  font-size:40px;
-  
-  margin:0px;
-  padding:10px 0px;
+.header:after{
+  visibility:hidden;
+  display:block;
+  font-size:0;
+  content:' ';
+  clear:both;
+  height:0;
 }
 .header .timer{
-  display:inline-block;
+  float:right;
+  
+  display:block;
   vertical-align:middle;
   
-  border:4px dashed rgb(200,200,200);
+  border:4px dashed rgba(255,255,255,0.75);
 	-webkit-border-radius: 3px;
 	-moz-border-radius:    3px;
 	border-radius:         3px;
   
-  color:rgb(102,102,102);
+  color:rgb(255,255,255);
   
   font-size:30px;
   font-weight:700;
@@ -58,89 +55,314 @@ body{
   
   text-align:center;
 }
-
-.squares{
-  margin:40px 0px;
-  padding:7px 10px;
+.header .menu{
+  position:absolute;
+  left:20px;
+  top:50%;
   
-  background:rgb(245,245,245);
+  -webkit-transform:translate(0, -50%);
+  -moz-transform:   translate(0, -50%);
+  -mos-transform:   translate(0, -50%);
+  -o-transform:     translate(0, -50%);
+  transform:        translate(0, -50%);
   
-	-webkit-border-radius: 5px;
-	-moz-border-radius:    5px;
-	border-radius:         5px;
+  background:transparent center center no-repeat;
+  background-size:48px 48px;
+  background-image:url(/images/hamburger.svg);
+  
+  width: 48px;
+  height:48px;
+  
+  cursor:pointer;
 }
-.square_dest{
+
+.board{
+  margin:50px;
+}
+
+square\:dest{
   display:inline-block;
   
   vertical-align:middle;
   
-  box-shadow:inset 1px 1px 0px 1px rgb(200,200,200);
+  box-shadow:inset 1px 1px 0px 1px rgb(210,210,210);
   background:rgb(230,230,230);
   
 	-webkit-border-radius: 3px;
 	-moz-border-radius:    3px;
 	border-radius:         3px;
+  overflow:hidden;
   
-  margin:6px 3px;
+  margin:6px;
   
   cursor:default;
 }
-
-.square,
-.square_dest{
-  width:      80px;
-  height:     80px;
-  line-height:80px;
-}
-
-.square{
-  position:absolute;
-  top:-100px;
-  left:-100px;
+square\:dest square,
+square\:moving{
+  display:block;
   
-  z-index:998;
-  
-  background:rgb(232,78,78);
+  background:rgb(232,48,108);
   color:rgb(255,255,255);
+  
+  height:100%;
+  width:100%;
   
   font-family:Arial;
   font-size:30px;
   font-weight:700;
   text-align:center;
+  text-transform:uppercase;
   
   cursor:move;
-  
-	-webkit-border-radius: 3px;
-	-moz-border-radius:    3px;
-	border-radius:         3px;
-  
-  text-transform:uppercase;
 }
-.square.pickedup{
-  z-index:999;
-  
-  -webkit-transform:scale(1.2, 1.2);
-  -moz-transform:   scale(1.2, 1.2);
-  -mos-transform:   scale(1.2, 1.2);
-  -o-transform:     scale(1.2, 1.2);
-  transform:        scale(1.2, 1.2);
-  
-  -webkit-box-shadow:0px 0px 20px rgba(0,0,0,0.2);
-  -moz-box-shadow:0px 0px 20px rgba(0,0,0,0.2);
-  -mos-box-shadow:0px 0px 20px rgba(0,0,0,0.2);
-  -o-box-shadow:0px 0px 20px rgba(0,0,0,0.2);
-  box-shadow:0px 0px 20px rgba(0,0,0,0.2);
+square\:dest square.moving{
+  display:none;
 }
-.square.locked{
+square\:dest square.locked{
   cursor:not-allowed;
   
   background:rgb(146,160,160);
 }
-
-.squares.dock{
-  margin:0px;
+square\:dest,
+square\:moving{
+  height:     80px;
+  width:      80px;
+  line-height:80px;
 }
-h2{
+square\:moving{
+  position:absolute;
+  
+  z-index:999;
+  
+	-webkit-border-radius: 3px;
+	-moz-border-radius:    3px;
+	border-radius:         3px;
+
+  -webkit-animation: animation 1000ms linear both;
+  animation:         animation 1000ms linear both;
+}
+
+/* Bounce.js */
+@keyframes animation{
+  0%{
+    box-shadow:0 0 0 transparent;
+    -webkit-transform:matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
+  }
+  3.4%{
+    -webkit-transform:matrix3d(1.095,0,0,0,0,1.122,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.095,0,0,0,0,1.122,0,0,0,0,1,0,0,0,0,1);
+  }
+  4.7%{
+    -webkit-transform:matrix3d(1.135,0,0,0,0,1.18,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.135,0,0,0,0,1.18,0,0,0,0,1,0,0,0,0,1);
+  }
+  6.81%{
+    -webkit-transform:matrix3d(1.198,0,0,0,0,1.268,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.198,0,0,0,0,1.268,0,0,0,0,1,0,0,0,0,1);
+  }
+  9.41%{
+    -webkit-transform:matrix3d(1.265,0,0,0,0,1.35,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.265,0,0,0,0,1.35,0,0,0,0,1,0,0,0,0,1);
+  }
+  10.21%{
+    -webkit-transform:matrix3d(1.282,0,0,0,0,1.368,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.282,0,0,0,0,1.368,0,0,0,0,1,0,0,0,0,1);
+  }
+  13.61%{
+    -webkit-transform:matrix3d(1.337,0,0,0,0,1.4,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.337,0,0,0,0,1.4,0,0,0,0,1,0,0,0,0,1);
+  }
+  14.11%{
+    -webkit-transform:matrix3d(1.342,0,0,0,0,1.399,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.342,0,0,0,0,1.399,0,0,0,0,1,0,0,0,0,1);
+  }
+  17.52%{
+    -webkit-transform:matrix3d(1.362,0,0,0,0,1.372,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.362,0,0,0,0,1.372,0,0,0,0,1,0,0,0,0,1);
+  }
+  18.72%{
+    -webkit-transform:matrix3d(1.364,0,0,0,0,1.356,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.364,0,0,0,0,1.356,0,0,0,0,1,0,0,0,0,1);
+  }
+  21.32%{
+    -webkit-transform:matrix3d(1.359,0,0,0,0,1.321,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.359,0,0,0,0,1.321,0,0,0,0,1,0,0,0,0,1);
+  }
+  24.32%{
+    -webkit-transform:matrix3d(1.345,0,0,0,0,1.288,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.345,0,0,0,0,1.288,0,0,0,0,1,0,0,0,0,1);
+  }
+  25.23%{
+    -webkit-transform:matrix3d(1.34,0,0,0,0,1.281,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.34,0,0,0,0,1.281,0,0,0,0,1,0,0,0,0,1);
+  }
+  29.03%{
+  box-shadow:0 0 20px rgba(0,0,0,0.3);
+    -webkit-transform:matrix3d(1.319,0,0,0,0,1.269,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.319,0,0,0,0,1.269,0,0,0,0,1,0,0,0,0,1);
+  }
+  29.93%{
+    -webkit-transform:matrix3d(1.314,0,0,0,0,1.27,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.314,0,0,0,0,1.27,0,0,0,0,1,0,0,0,0,1);
+  }
+  35.54%{
+    -webkit-transform:matrix3d(1.294,0,0,0,0,1.289,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.294,0,0,0,0,1.289,0,0,0,0,1,0,0,0,0,1);
+  }
+  36.74%{
+    -webkit-transform:matrix3d(1.291,0,0,0,0,1.294,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.291,0,0,0,0,1.294,0,0,0,0,1,0,0,0,0,1);
+  }
+  41.04%{
+    -webkit-transform:matrix3d(1.288,0,0,0,0,1.307,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.288,0,0,0,0,1.307,0,0,0,0,1,0,0,0,0,1);
+  }
+  44.44%{
+    -webkit-transform:matrix3d(1.29,0,0,0,0,1.31,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.29,0,0,0,0,1.31,0,0,0,0,1,0,0,0,0,1);
+  }
+  52.15%{
+    -webkit-transform:matrix3d(1.297,0,0,0,0,1.302,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.297,0,0,0,0,1.302,0,0,0,0,1,0,0,0,0,1);
+  }
+  59.86%{
+    -webkit-transform:matrix3d(1.302,0,0,0,0,1.297,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.302,0,0,0,0,1.297,0,0,0,0,1,0,0,0,0,1);
+  }
+  63.26%{
+    -webkit-transform:matrix3d(1.302,0,0,0,0,1.298,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.302,0,0,0,0,1.298,0,0,0,0,1,0,0,0,0,1);
+  }
+  75.28%{
+    -webkit-transform:matrix3d(1.3,0,0,0,0,1.301,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.3,0,0,0,0,1.301,0,0,0,0,1,0,0,0,0,1);
+  }
+  85.49%{
+    -webkit-transform:matrix3d(1.3,0,0,0,0,1.3,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.3,0,0,0,0,1.3,0,0,0,0,1,0,0,0,0,1);
+  }
+  90.69%{
+    -webkit-transform:matrix3d(1.3,0,0,0,0,1.3,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.3,0,0,0,0,1.3,0,0,0,0,1,0,0,0,0,1);
+  }
+  100%{
+    box-shadow:0 0 20px rgba(0,0,0,0.3);
+    -webkit-transform:matrix3d(1.3,0,0,0,0,1.3,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.3,0,0,0,0,1.3,0,0,0,0,1,0,0,0,0,1);
+  }
+}
+@-webkit-keyframes animation{
+  0%{
+    box-shadow:0 0 0 transparent;
+    -webkit-transform:matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
+  }
+  3.4%{
+    -webkit-transform:matrix3d(1.095,0,0,0,0,1.122,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.095,0,0,0,0,1.122,0,0,0,0,1,0,0,0,0,1);
+  }
+  4.7%{
+    -webkit-transform:matrix3d(1.135,0,0,0,0,1.18,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.135,0,0,0,0,1.18,0,0,0,0,1,0,0,0,0,1);
+  }
+  6.81%{
+    -webkit-transform:matrix3d(1.198,0,0,0,0,1.268,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.198,0,0,0,0,1.268,0,0,0,0,1,0,0,0,0,1);
+  }
+  9.41%{
+    -webkit-transform:matrix3d(1.265,0,0,0,0,1.35,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.265,0,0,0,0,1.35,0,0,0,0,1,0,0,0,0,1);
+  }
+  10.21%{
+    -webkit-transform:matrix3d(1.282,0,0,0,0,1.368,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.282,0,0,0,0,1.368,0,0,0,0,1,0,0,0,0,1);
+  }
+  13.61%{
+    -webkit-transform:matrix3d(1.337,0,0,0,0,1.4,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.337,0,0,0,0,1.4,0,0,0,0,1,0,0,0,0,1);
+  }
+  14.11%{
+    -webkit-transform:matrix3d(1.342,0,0,0,0,1.399,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.342,0,0,0,0,1.399,0,0,0,0,1,0,0,0,0,1);
+  }
+  17.52%{
+    -webkit-transform:matrix3d(1.362,0,0,0,0,1.372,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.362,0,0,0,0,1.372,0,0,0,0,1,0,0,0,0,1);
+  }
+  18.72%{
+    -webkit-transform:matrix3d(1.364,0,0,0,0,1.356,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.364,0,0,0,0,1.356,0,0,0,0,1,0,0,0,0,1);
+  }
+  21.32%{
+    -webkit-transform:matrix3d(1.359,0,0,0,0,1.321,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.359,0,0,0,0,1.321,0,0,0,0,1,0,0,0,0,1);
+  }
+  24.32%{
+    -webkit-transform:matrix3d(1.345,0,0,0,0,1.288,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.345,0,0,0,0,1.288,0,0,0,0,1,0,0,0,0,1);
+  }
+  25.23%{
+    -webkit-transform:matrix3d(1.34,0,0,0,0,1.281,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.34,0,0,0,0,1.281,0,0,0,0,1,0,0,0,0,1);
+  }
+  29.03%{
+    box-shadow:0 0 20px rgba(0,0,0,0.3);
+    -webkit-transform:matrix3d(1.319,0,0,0,0,1.269,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.319,0,0,0,0,1.269,0,0,0,0,1,0,0,0,0,1);
+  }
+  29.93%{
+    -webkit-transform:matrix3d(1.314,0,0,0,0,1.27,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.314,0,0,0,0,1.27,0,0,0,0,1,0,0,0,0,1);
+  }
+  35.54%{
+    -webkit-transform:matrix3d(1.294,0,0,0,0,1.289,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.294,0,0,0,0,1.289,0,0,0,0,1,0,0,0,0,1);
+  }
+  36.74%{
+    -webkit-transform:matrix3d(1.291,0,0,0,0,1.294,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.291,0,0,0,0,1.294,0,0,0,0,1,0,0,0,0,1);
+  }
+  41.04%{
+    -webkit-transform:matrix3d(1.288,0,0,0,0,1.307,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.288,0,0,0,0,1.307,0,0,0,0,1,0,0,0,0,1);
+  }
+  44.44%{
+    -webkit-transform:matrix3d(1.29,0,0,0,0,1.31,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.29,0,0,0,0,1.31,0,0,0,0,1,0,0,0,0,1);
+  }
+  52.15%{
+    -webkit-transform:matrix3d(1.297,0,0,0,0,1.302,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.297,0,0,0,0,1.302,0,0,0,0,1,0,0,0,0,1);
+  }
+  59.86%{
+    -webkit-transform:matrix3d(1.302,0,0,0,0,1.297,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.302,0,0,0,0,1.297,0,0,0,0,1,0,0,0,0,1);
+  }
+  63.26%{
+    -webkit-transform:matrix3d(1.302,0,0,0,0,1.298,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.302,0,0,0,0,1.298,0,0,0,0,1,0,0,0,0,1);
+  }
+  75.28%{
+    -webkit-transform:matrix3d(1.3,0,0,0,0,1.301,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.3,0,0,0,0,1.301,0,0,0,0,1,0,0,0,0,1);
+  }
+  85.49%{
+    -webkit-transform:matrix3d(1.3,0,0,0,0,1.3,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.3,0,0,0,0,1.3,0,0,0,0,1,0,0,0,0,1);
+  }
+  90.69%{
+    -webkit-transform:matrix3d(1.3,0,0,0,0,1.3,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.3,0,0,0,0,1.3,0,0,0,0,1,0,0,0,0,1);
+  }
+  100%{
+    box-shadow:0 0 20px rgba(0,0,0,0.3);
+    -webkit-transform:matrix3d(1.3,0,0,0,0,1.3,0,0,0,0,1,0,0,0,0,1);
+    transform:matrix3d(1.3,0,0,0,0,1.3,0,0,0,0,1,0,0,0,0,1);
+  }
+}
+
+.drop h2{
   text-transform:uppercase;
   font-size:12px;
   font-weight:700;
@@ -149,54 +371,7 @@ h2{
   color:rgb(51,51,51);
 }
 
-@media (max-width: 430px){
-  .square,
-  .square_dest{
-    width:      75px;
-    height:     75px;
-    line-height:75px;
-  }
-}
-@media (max-width: 410px){
-  .square,
-  .square_dest{
-    width:      70px;
-    height:     70px;
-    line-height:70px;
-  }
-}
-@media (max-width: 390px){
-  .square,
-  .square_dest{
-    width:      65px;
-    height:     65px;
-    line-height:65px;
-  }
-}
-@media (max-width: 370px){
-  .square,
-  .square_dest{
-    width:      60px;
-    height:     60px;
-    line-height:60px;
-  }
-}
-@media (max-width: 350px){
-  .square,
-  .square_dest{
-    width:      55px;
-    height:     55px;
-    line-height:55px;
-  }
-}
-@media (max-width: 330px){
-  .square,
-  .square_dest{
-    width:      50px;
-    height:     50px;
-    line-height:50px;
-  }
-}
+
 
 </style>
 <html>
@@ -205,406 +380,245 @@ h2{
 <title>4x4 | The Fun Word Game</title>
 
 <meta charset="utf-8" />
-<meta content="yes" name="apple-mobile-web-app-capable" />
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+
 <meta content="minimum-scale=1.0, width=device-width, maximum-scale=1, user-scalable=no" name="viewport"/>
 
 <link rel="stylesheet" href="/resources/css/resets.css"/>
 
-<script src='/resources/scripts/classie.js'></script>
-<script src='/resources/scripts/Post.js'></script>
-<script src='/resources/scripts/Overload.min.js'></script>
-<script src='/resources/scripts/TrieTree.js'></script>
+<script src='/resources/scripts/util/Overload.min.js'></script>
+<script src='/resources/scripts/util/classie.js'></script>
+<script src='/resources/scripts/util/Post.js'></script>
+<script src='/resources/scripts/util/TrieTree.js'></script>
+<script src='/resources/scripts/util/EventDispatcher.js'></script>
+
+<script src='/resources/scripts/Board.js'></script>
+<script src='/resources/scripts/Game.js'></script>
+<script src='/resources/scripts/Square.js'></script>
+<script src='/resources/scripts/SquareDest.js'></script>
 
 </head>
 <body>
 
 
-
-<div class='max-width'>
-  <div class='header'>
-    <h1>4x4</h1>
-    <!-- css problem -->
-    <div class='timer'>0:00</div>
-  </div>
-  <div class='squares'>
-    <div class='square_dest'></div>
-    <div class='square_dest'></div>
-    <div class='square_dest'></div>
-    <div class='square_dest'></div><br/>
-    <div class='square_dest'></div>
-    <div class='square_dest'></div>
-    <div class='square_dest'></div>
-    <div class='square_dest'></div><br/>
-    <div class='square_dest'></div>
-    <div class='square_dest'></div>
-    <div class='square_dest'></div>
-    <div class='square_dest'></div><br/>
-    <div class='square_dest'></div>
-    <div class='square_dest'></div>
-    <div class='square_dest'></div>
-    <div class='square_dest'></div>
-  </div>
-  <h2>Drop Space</h2>
-  <div class='squares dock'>
-    <div class='square_dest'></div>
-    <div class='square_dest'></div>
-    <div class='square_dest'></div>
-    <div class='square_dest'></div><br/>
-    <div class='square_dest'></div>
-    <div class='square_dest'></div>
-    <div class='square_dest'></div>
-    <div class='square_dest'></div>
-  </div>
+<div class='header'>
+  <div class='menu'></div>
+  <div class='timer'>0:00</div>
 </div>
 
+<div class='board'></div>
+
+<div class='drop'>
+  <h2>dropspace</h2>
+</div>
 
 
 <script type='text/javascript'>
 (function(){
-	
-  function Tile(){
+  
+  function Game(){
     var self = this;
     var undefined;
     
-    var frame;
-    var mouse = {};
-    var last_snap;
-    var movable = true;
+    var board, drop, timer;
+    var dict;
     
-    self.onsnap = new Function();
+    var timer_isrunning, timer_start, timer_interval;
     
-    self.snapTo = SnapTo;
+    self.create = Create;
     
-    self.getValue = GetValue;
-    self.setValue = SetValue;
-    
-    self.setMovable = SetMovable;
-    
-    function GetValue(){
-      return frame.innerHTML;
-    }
-    function SetValue(val){
-      if(val == undefined) return;
-      frame.innerHTML = val;
-    }
-    
-    function SetMovable(bool){
-      if(!bool) classie.add(frame, 'locked');
-      movable = bool;
-    }
-    
-    function CreateTile(){
-      frame = document.createElement('div');
-      classie.add(frame, 'square');
+    function CheckPuzzle(){
+      if(!IsValidPuzzle()) return;
       
-      document.body.appendChild(frame);
+      PauseTimer();
+      alert('You Won');
     }
-    
-    function Bind(){
-      frame.addEventListener('mousedown', PickUp);
-      frame.addEventListener('touchstart', PickUpTouch);
-    }
-    function PickUp(event){
-      if(!movable) return;
+    function IsValidPuzzle(){
+      var puzzle = board.getValue(),
+          rows = puzzle.map(function(value){return value.join('');}),
+          cols = [];
       
-      classie.add(frame, 'pickedup');
-      
-      mouse.lx = event.x;
-      mouse.ly = event.y;
-      
-      window.addEventListener('mousemove', OnMove);
-      window.addEventListener('touchmove', OnMoveTouch);
-      window.addEventListener('mouseup', PutDown);
-      window.addEventListener('touchcancel', PutDownTouch);
-      window.addEventListener('touchend', PutDownTouch);
-    }
-    function PickUpTouch(event){
-      event.preventDefault();
-      
-      PickUp({
-        x: event.touches[0].pageX,
-        y: event.touches[0].pageY
-      });
-    }
-    function OnMove(event){
-      UpdateTilePosition(event);
-    }
-    function OnMoveTouch(event){
-      event.preventDefault();
-      
-      OnMove({
-        x: event.touches[0].pageX,
-        y: event.touches[0].pageY
-      });
-    }
-    function PutDown(event){
-      classie.remove(frame, 'pickedup');
-      
-      UpdateTilePosition(event);
-      AutoSnap();
-      
-      window.removeEventListener('mousemove', OnMove);
-      window.removeEventListener('touchmove', OnMoveTouch);
-      window.removeEventListener('mouseup', PutDown);
-      window.removeEventListener('touchcancel', PutDownTouch);
-      window.removeEventListener('touchend', PutDownTouch);
-    }
-    function PutDownTouch(event){
-      PutDown({
-        x: mouse.lx,
-        y: mouse.ly
-      });
-    }
-    
-    function UpdateTilePosition(event){
-      var x = event.x,
-          y = event.y,
-          dx = x - mouse.lx,
-          dy = y - mouse.ly;
-
-      Translate(dx, dy);
-      
-      mouse.lx = x;
-      mouse.ly = y;
-    }
-    function Translate(dx, dy){
-      var sx = frame.offsetLeft,
-          sy = frame.offsetTop;
-      
-      frame.style.top = dy+sy+'px';
-      frame.style.left = dx+sx+'px';
-    }
-    
-    function SnapTo(dest){
-      if(dest == undefined) return;
-      if(dest.isSnapped && dest != last_snap) return;
-      
-      if(last_snap != undefined){
-        last_snap.isSnapped = false;
-        last_snap.snapped = undefined;
+      for(var x=0; x<board.getWidth(); x++){
+        var col = '';
+        for(var y=0; y<board.getHeight(); y++)
+          col += puzzle[y][x] || '';
+        cols.push(col);
       }
-      dest.isSnapped = true;
-      dest.snapped = self;
       
-      var x = dest.offsetLeft,
-          y = dest.offsetTop;
+      var rows_valid = rows.filter(function(value){return dict.contains(value);}).length == board.getHeight(),
+          cols_valid = cols.filter(function(value){return dict.contains(value);}).length == board.getWidth();
       
-      frame.style.top = y+'px';
-      frame.style.left = x+'px';
-      
-      if(dest != last_snap) self.onsnap(self);
-      last_snap = dest;
+      return rows_valid && cols_valid;
     }
-    function AutoSnap(){
-      var targets = document.querySelectorAll('.square_dest');
+    
+    function GeneratePuzzle(width, height){
+      var rows = [], cols = [], used = [];
       
-      var sx = frame.offsetLeft,
-          sy = frame.offsetTop,
-          cx = frame.offsetWidth/2 + sx,
-          cy = frame.offsetHeight/2 + sy;
-      
-      var min = {};
-      
-      for(var i=0,target; target=targets[i++];){
-        var dcx = target.offsetLeft + target.offsetWidth/2,
-            dcy = target.offsetTop + target.offsetHeight/2,
-            dist = Math.sqrt(Math.pow(cx-dcx,2)+Math.pow(cy-dcy,2));
-        
-        if(min.value == undefined || dist < min.value){
-          min.value = dist;
-          min.elem = target;
+      function Valid(str, len){
+        if(str.length == len){
+          if(used.indexOf(str) != -1) return false;
+          else return dict.contains(str);
+        }else{
+          var node = dict.get(str);
+          return !!node && node.hasChildren();
         }
       }
       
-      var diagonal = Math.sqrt(Math.pow(frame.offsetWidth,2)+Math.pow(frame.offsetHeight,2));
+      function Intersect(arr1, arr2){
+        return arr1.filter(function(value){
+          return arr2.indexOf(value) != -1;
+        });
+      }
       
-      if(min.value < diagonal/2 && !min.elem.isSnapped) SnapTo(min.elem);
-      else SnapTo(last_snap);
+      function Recurse(index){
+        if(index == width*height) return rows[rows.length-1] != cols[cols.length-1];
+        
+        var row = Math.floor(index / width),
+            col = index - row * width;
+        
+        if(rows[row] == undefined) rows[row] = '';
+        if(cols[col] == undefined) cols[col] = '';
+        
+        var letters = Intersect(dict.get(rows[row]).getChildren(), dict.get(cols[col]).getChildren());
+        while(letters.length > 0){
+          var letter = letters.splice(Math.floor(Math.random()*letters.length), 1);
+          
+          rows[row] += letter;
+          cols[col] += letter;
+          
+          if(Valid(rows[row], width) && Valid(cols[col], height)){
+            if(rows[row].length == width) used.push(rows[row]);
+            if(cols[col].length == height) used.push(cols[col]);
+            if(Recurse(index+1)) return true;
+            if(rows[row].length == width) used.splice(-1,1);
+            if(cols[col].length == height) used.splice(-1,1);
+          }
+          
+          rows[row] = rows[row].slice(0,-1);
+          cols[col] = cols[col].slice(0,-1);
+          
+        }
+        
+        return false;
+      }
+      
+      Recurse(0);
+      
+      var puzzle = [];
+      for(var i=0,row; row=rows[i++];) puzzle.push(row.split(''));
+      return puzzle;
     }
     
-    (function Constructor(val){
-      CreateTile();
-      Bind();
-      SetValue(val);
+    function Create(width, height){
+      board.resize(width, height);
+      drop.resize(width, Math.floor(height/2));
+      
+      var puzzle = GeneratePuzzle(width, height);
+      
+      var indices = [], sudo_random = [];
+      
+      for(var y=0; y<board.getHeight(); y++)
+        for(var x=0; x<board.getWidth(); x++)
+          if(x != y){
+            indices.push({x:x, y:y});
+          }else{
+            if(!sudo_random[y]) sudo_random[y] = [];
+            sudo_random[y][x] = puzzle[y].splice(x, 1)[0];
+          }
+      
+      var letters = puzzle.reduce(function(prev, value){return prev.concat(value);});
+      while(indices.length > 0){
+        var index = indices.splice(Math.floor(Math.random()*indices.length), 1)[0];
+        sudo_random[index.y][index.x] = letters.shift();
+      }
+      
+      board.setValue(sudo_random);
+      
+      var cells = board.getCells();
+      for(var y=0; y<board.getHeight(); y++)
+        for(var x=0; x<board.getWidth(); x++)
+          if(x == y) cells[y][x].getSquare().setMovable(false);
+      
+      ResetTimer();
+      StartTimer();
+    }
+    
+    function StartTimer(){
+      if(timer_isrunning) return;
+      timer_isrunning = true;
+      
+      if(timer_start == undefined) timer_start = Date.now();
+      timer_interval = setInterval(UpdateTimer, 1000);
+    }
+    function PauseTimer(){
+      if(!timer_isrunning) return;
+      timer_isrunning = false;
+      
+      clearInterval(timer_interval);
+    }
+    function ResetTimer(){
+      timer_start = Date.now();
+    }
+    function UpdateTimer(){
+      var difftime = Date.now() - timer_start,
+          hours   = Math.floor((difftime % (60*60*60*1000))/(60*60*1000)),
+          minutes = Math.floor((difftime % (   60*60*1000))/(   60*1000)),
+          seconds = Math.floor((difftime % (      60*1000))/(      1000));
+  
+      if(seconds < 10) seconds = '0'+seconds;
+      if(hours > 0) if(minutes < 10) minutes = '0'+minutes;
+  
+      if(hours > 0) timer.innerHTML = hours+':'+minutes+':'+seconds;
+      else timer.innerHTML = minutes+':'+seconds;
+    }
+    
+    (function Constructor(dictionary, board_frame, drop_frame, timer_frame){
+      dict = dictionary;
+      
+      board = new Board(board_frame);
+      board.addEventListener('snap', CheckPuzzle);
+      
+      drop = new Board(drop_frame);
+      
+      timer = timer_frame;
     }).apply(this, arguments);
+  }
+  
+  // pared by me from http://www-01.sil.org/linguistics/wordlists/english/wordlist/wordsEn.txt
+  function LoadDictionary(callback){
+    var dicts = ['/resources/dict_4.txt'],
+        words = [],
+        loads = 0;
+    
+    for(var i=0,dict; dict=dicts[i++];)
+      (function(dict){
+        Get(dict, function OnResponse(event){
+          console.log('Loaded Dict '+(loads+1)+' of '+dicts.length);
+        
+          words = words.concat(event.responseText.split(','));
+          if(++loads == dicts.length) OnFinish();
+        });
+      })(dict);
+    
+    function OnFinish(){
+      if(typeof callback == 'function') callback(new TrieTree(words));
+    }
   }
   
   window.addEventListener('load', Init);
   
-  var dict;
-  var starttime;
-  
-  const width = 4;
-  const height = 4;
-  
-  function LoadDictionary(loc, callback){
-    Get(loc, function OnSuccess(event){
-      dict = new TrieTree(event.responseText.split(','));
-      if(typeof callback == 'function') callback();
-    }, function OnError(){
-      alert('Error Loading Dictionary. Please refresh the page.')
-    });
-  }
-  
-  function CheckPuzzle(){
-    if(!IsValidPuzzle()) return;
-    alert('You Won!');
-  }
-  function IsValidPuzzle(){
-    var targets = document.querySelectorAll('.square_dest');
-    
-    var rows = [],
-        cols = [];
-    
-    for(var i=0; i<width*height; i++){
-      var row = Math.floor(i / width);
-      var col = i - width*row;
-      
-      if(!rows[row]) rows.push('');
-      if(!cols[col]) cols.push('');
-      
-      var tile = targets[i].snapped;
-      if(!tile) return false;
-      
-      rows[row] += tile.getValue();
-      cols[col] += tile.getValue();
-    }
-    
-    var words = rows.concat(cols);
-    
-    for(var i=0,word; word=words[i++];)
-      if (!dict.contains(word)) return false;
-    
-    return true;
-  }
-  // shouldn't, but does, allow last row and col to have same word
-  function GeneratePuzzle(){
-    var rows = [],
-        cols = [],
-        used = [];
-    
-    function ValidRow(row){
-      if(row.length == width && used.indexOf(row) != -1) return false;
-      return row.length == width ? dict.contains(row) : (!!dict.get(row) && dict.get(row).hasChildren());
-    }
-    function ValidCol(col){
-      if(col.length == height && used.indexOf(col) != -1) return false;
-      return col.length == height ? dict.contains(col) : (!!dict.get(col) && dict.get(col).hasChildren());
-    }
-    function Recurse(index){
-      if(index == width*height) return true;
-      
-      var row = Math.floor(index / width);
-      var col = index - width*row;
-      
-      var row_children = dict.get(rows[row]).getChildren(),
-          col_children = dict.get(cols[col]).getChildren();
-      var letters = row_children.length < col_children ? row_children : col_children;
-      
-      while(letters.length > 0){
-        var i = Math.floor(Math.random()*letters.length);
-        
-        rows[row] += letters[i];
-        cols[col] += letters[i];
-        
-        if(ValidRow(rows[row]) && ValidCol(cols[col])){
-          if(rows[row].length == width) used.push(rows[row]);
-          if(cols[col].length == height) used.push(cols[col]);
-          if(Recurse(index+1)) return true;
-          if(rows[row].length == width) used.pop();
-          if(cols[col].length == height) used.pop();
-        }
-        
-        rows[row] = rows[row].slice(0,-1);
-        cols[col] = cols[col].slice(0,-1);
-        
-        letters.splice(i, 1);
-      }
-      
-      return false;
-    }
-    
-    console.log('Generating Puzzle');
-    
-    for(var i=0; i<width; i++) cols.push('');
-    for(var i=0; i<height; i++) rows.push('');
-    
-    Recurse(0);
-    
-    var letters = '';
-    for(var i=0,row; row=rows[i++];) letters += row;
-    letters = letters.split('');
-    
-    return letters;
-  }
-  
-  // RECORDS
-  // 4 x 4
-  // 32 seconds no help
-  // 20 seconds with help
-  
-  function CreateGame(){
-    console.log('Dictionary Loaded');
-    var letters = GeneratePuzzle();
-    CreateTiles(letters);
-    StartTimer();
-  }
-  function CreateTiles(letters){
-    console.log('Creating Tiles');
-    
-    var targets = document.querySelectorAll('.square_dest');
-    
-    var rand = [],
-        indicies = [];
-    
-    for(var i=0; i<letters.length; i++)
-      if(i%width != Math.floor(i/width))
-        indicies.push(i);
-    
-    for(var i=0; i<letters.length; i++){
-      if(i%width == Math.floor(i/width)){
-        rand[i] = letters[i];
-      }else{
-        var index = Math.floor(Math.random()*indicies.length);
-        rand[indicies[index]] = letters[i];
-        indicies.splice(index, 1);
-      }
-    }
-    
-    for(var i=0; i<rand.length; i++){
-      var target = targets[i];
-      
-      var tile = new Tile(rand[i]);
-      if(i%width == Math.floor(i/width)) tile.setMovable(false);
-      
-      tile.snapTo(target);
-      
-      tile.onsnap = CheckPuzzle;
-    }
-  }
-  function StartTimer(){
-    starttime = Date.now();
-    setInterval(UpdateTimer, 1000);
-  }
-  function UpdateTimer(){
-    var difftime = Date.now() - starttime,
-        hours   = Math.floor((difftime % (60*60*60*1000))/(60*60*1000)),
-        minutes = Math.floor((difftime % (   60*60*1000))/(   60*1000)),
-        seconds = Math.floor((difftime % (      60*1000))/(      1000));
-    
-    if(seconds < 10) seconds = '0'+seconds;
-    if(hours > 0)
-      if(minutes < 10) minutes = '0'+minutes;
-    
-    var timer = document.querySelector('.timer');
-    
-    if(hours > 0) timer.innerHTML = hours+':'+minutes+':'+seconds;
-    else timer.innerHTML = minutes+':'+seconds;
-  }
-  
   function Init(){
-    console.log('Loading Dictionary');
-    LoadDictionary('/resources/dict_4.txt', CreateGame);
+    LoadDictionary(function Callback(dict){
+      var game = new Game(
+        dict,
+        document.querySelector('.board'),
+        document.querySelector('.drop'),
+        document.querySelector('.timer')
+      );
+      game.create(4,4);
+    });
   }
   
 })();
