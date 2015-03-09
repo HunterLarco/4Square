@@ -489,7 +489,17 @@ square\:moving{
       drop.resize(width, Math.floor(height/2));
       
       var puzzle = GeneratePuzzle(width, height);
-      board.setValue(puzzle);
+      letters = puzzle.reduce(function(prev, value){return prev.concat(value);});
+      
+      var randomized = [];
+      while(letters.length > 0){
+        var letter = letters.splice(Math.floor(Math.random()*letters.length), 1)[0];
+        
+        if((letters.length+1) % width == 0) randomized.push([]);
+        randomized[randomized.length-1].push(letter);
+      }
+      
+      board.setValue(randomized);
     }
     
     (function Constructor(dictionary, board_frame, drop_frame){
@@ -499,6 +509,7 @@ square\:moving{
     }).apply(this, arguments);
   }
   
+  // pared by me from http://www-01.sil.org/linguistics/wordlists/english/wordlist/wordsEn.txt
   function LoadDictionary(callback){
     var dicts = ['/resources/dict_4.txt'],
         words = [],
@@ -518,7 +529,6 @@ square\:moving{
       if(typeof callback == 'function') callback(new TrieTree(words));
     }
   }
-  
   
   window.addEventListener('load', Init);
   
