@@ -50,6 +50,7 @@
       return values;
     }
     function SetValue(arr){
+      if(arr == undefined) return false;
       if(arr.length != height || (arr.length == 0 ? {length:0} : arr[0]).length != width) return false;
     
       for(var y=0; y<cells.length; y++)

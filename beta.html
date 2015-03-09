@@ -422,34 +422,111 @@ square\:moving{
     var undefined;
     
     var board, drop;
+    var dict;
     
     self.create = Create;
     
     function GeneratePuzzle(width, height){
+      var rows = [], cols = [], used = [];
       
+      function Valid(str, len){
+        if(str.length == len){
+          if(used.indexOf(str) != -1) return false;
+          else return dict.contains(str);
+        }else{
+          var node = dict.get(str);
+          return !!node && node.hasChildren();
+        }
+      }
+      
+      function Intersect(arr1, arr2){
+        return arr1.filter(function(value){
+          return arr2.indexOf(value) != -1;
+        });
+      }
+      
+      function Recurse(index){
+        if(index == width*height) return rows[rows.length-1] != cols[cols.length-1];
+        
+        var row = Math.floor(index / width),
+            col = index - row * width;
+        
+        if(rows[row] == undefined) rows[row] = '';
+        if(cols[col] == undefined) cols[col] = '';
+        
+        var letters = Intersect(dict.get(rows[row]).getChildren(), dict.get(cols[col]).getChildren());
+        while(letters.length > 0){
+          var letter = letters.splice(Math.floor(Math.random()*letters.length), 1);
+          
+          rows[row] += letter;
+          cols[col] += letter;
+          
+          if(Valid(rows[row], width) && Valid(cols[col], height)){
+            if(rows[row].length == width) used.push(rows[row]);
+            if(cols[col].length == height) used.push(cols[col]);
+            if(Recurse(index+1)) return true;
+            if(rows[row].length == width) used.splice(-1,1);
+            if(cols[col].length == height) used.splice(-1,1);
+          }
+          
+          rows[row] = rows[row].slice(0,-1);
+          cols[col] = cols[col].slice(0,-1);
+          
+        }
+        
+        return false;
+      }
+      
+      Recurse(0);
+      
+      var puzzle = [];
+      for(var i=0,row; row=rows[i++];) puzzle.push(row.split(''));
+      return puzzle;
     }
     
     function Create(width, height){
       board.resize(width, height);
       drop.resize(width, Math.floor(height/2));
       
-      // var puzzle = GeneratePuzzle(width, height);
-      // board.setValue(puzzle);
+      var puzzle = GeneratePuzzle(width, height);
+      board.setValue(puzzle);
     }
     
-    (function Constructor(board_frame, drop_frame){
+    (function Constructor(dictionary, board_frame, drop_frame){
+      dict = dictionary;
       board = new Board(board_frame);
       drop = new Board(drop_frame);
     }).apply(this, arguments);
   }
   
+  function LoadDictionary(callback){
+    var dicts = ['/resources/dict_4.txt'],
+        words = [],
+        loads = 0;
+    
+    for(var i=0,dict; dict=dicts[i++];)
+      (function(dict){
+        Get(dict, function OnResponse(event){
+          console.log('Loaded Dict '+(loads+1)+' of '+dicts.length);
+        
+          words = words.concat(event.responseText.split(','));
+          if(++loads == dicts.length) OnFinish();
+        });
+      })(dict);
+    
+    function OnFinish(){
+      if(typeof callback == 'function') callback(new TrieTree(words));
+    }
+  }
   
   
   window.addEventListener('load', Init);
   
   function Init(){
-    var game = new Game(document.querySelector('.board'), document.querySelector('.drop'));
-    game.create(3,3);
+    LoadDictionary(function Callback(dict){
+      var game = new Game(dict, document.querySelector('.board'), document.querySelector('.drop'));
+      game.create(4,4);
+    });
   }
   
 })();
