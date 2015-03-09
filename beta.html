@@ -516,17 +516,31 @@ square\:moving{
       drop.resize(width, Math.floor(height/2));
       
       var puzzle = GeneratePuzzle(width, height);
-      letters = puzzle.reduce(function(prev, value){return prev.concat(value);});
       
-      var randomized = [];
-      while(letters.length > 0){
-        var letter = letters.splice(Math.floor(Math.random()*letters.length), 1)[0];
-        
-        if((letters.length+1) % width == 0) randomized.push([]);
-        randomized[randomized.length-1].push(letter);
+      var indices = [], sudo_random = [];
+      
+      for(var y=0; y<board.getHeight(); y++)
+        for(var x=0; x<board.getWidth(); x++)
+          if(x != y){
+            indices.push({x:x, y:y});
+          }else{
+            if(!sudo_random[y]) sudo_random[y] = [];
+            sudo_random[y][x] = puzzle[y].splice(x, 1)[0];
+          }
+      
+      var letters = puzzle.reduce(function(prev, value){return prev.concat(value);});
+      while(indices.length > 0){
+        var index = indices.splice(Math.floor(Math.random()*indices.length), 1)[0];
+        sudo_random[index.y][index.x] = letters.shift();
       }
       
-      board.setValue(randomized);
+      board.setValue(sudo_random);
+      
+      var cells = board.getCells();
+      for(var y=0; y<board.getHeight(); y++)
+        for(var x=0; x<board.getWidth(); x++)
+          if(x == y) cells[y][x].getSquare().setMovable(false);
+      
       ResetTimer();
       StartTimer();
     }

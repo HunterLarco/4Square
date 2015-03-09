@@ -19,6 +19,8 @@
     self.getValue = GetValue;
     self.setValue = SetValue;
   
+    self.getCells = GetCells;
+  
     function Resize(_width, _height){
       width = _width;
       height = _height;
@@ -64,6 +66,10 @@
           }
     
       return true;
+    }
+    
+    function GetCells(){
+      return cells;
     }
   
     function ClearBoard(){
