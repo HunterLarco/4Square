@@ -43,9 +43,10 @@
       }
       
       var rows_valid = rows.filter(function(value){return dict.contains(value);}).length == board.getHeight(),
-          cols_valid = cols.filter(function(value){return dict.contains(value);}).length == board.getWidth();
+          cols_valid = cols.filter(function(value){return dict.contains(value);}).length == board.getWidth(),
+          duplicates = rows.concat(cols).filter(function(value, index, arr){return arr.indexOf(value) != arr.lastIndexOf(value);}).length != 0;
       
-      return rows_valid && cols_valid;
+      return rows_valid && cols_valid && !duplicates;
     }
     
     function GeneratePuzzle(width, height){
