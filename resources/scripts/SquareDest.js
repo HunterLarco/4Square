@@ -5,6 +5,7 @@
     return total_dests;
   }
   
+  // EVENTS: onsnap
   function SquareDest(){
     var self = this;
     var undefined;
@@ -28,6 +29,12 @@
       
       square = _square;
       square.snapTo(self);
+      
+      self.dispatchEvent({
+        type: 'snap',
+        target: self,
+        square: square
+      });
       
       return true;
     }
@@ -65,6 +72,8 @@
       total_dests.push(self);
     }).apply(this, arguments);
   }
+  
+  EventDispatcher.prototype.apply(SquareDest.prototype);
   
   window.SquareDest = SquareDest;
   

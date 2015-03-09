@@ -1,5 +1,6 @@
 (function(){
   
+  // EVENTS: onsnap
   function Board(){
     var self = this;
     var undefined;
@@ -83,10 +84,15 @@
         }
       
         var dest = new SquareDest(frame);
+        dest.addEventListener('snap', FireOnSnap);
         row.push(dest);
       }
     
       cells.push(row);
+    }
+    
+    function FireOnSnap(event){
+      self.dispatchEvent(event);
     }
   
     var Constructor = Overload.function();
@@ -103,6 +109,8 @@
     }, ['number', 'number', 'object']);
     Constructor.apply(this, arguments);
   }
+  
+  EventDispatcher.prototype.apply(Board.prototype);
   
   window.Board = Board;
   

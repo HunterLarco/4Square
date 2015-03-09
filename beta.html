@@ -392,6 +392,7 @@ square\:moving{
 <script src='/resources/scripts/util/classie.js'></script>
 <script src='/resources/scripts/util/Post.js'></script>
 <script src='/resources/scripts/util/TrieTree.js'></script>
+<script src='/resources/scripts/util/EventDispatcher.js'></script>
 
 <script src='/resources/scripts/Board.js'></script>
 <script src='/resources/scripts/Game.js'></script>
@@ -421,10 +422,36 @@ square\:moving{
     var self = this;
     var undefined;
     
-    var board, drop;
+    var board, drop, timer;
     var dict;
     
+    var timer_isrunning, timer_start, timer_interval;
+    
     self.create = Create;
+    
+    function CheckPuzzle(){
+      if(!IsValidPuzzle()) return;
+      
+      PauseTimer();
+      alert('You Won');
+    }
+    function IsValidPuzzle(){
+      var puzzle = board.getValue(),
+          rows = puzzle.map(function(value){return value.join('');}),
+          cols = [];
+      
+      for(var x=0; x<board.getWidth(); x++){
+        var col = '';
+        for(var y=0; y<board.getHeight(); y++)
+          col += puzzle[y][x] || '';
+        cols.push(col);
+      }
+      
+      var rows_valid = rows.filter(function(value){return dict.contains(value);}).length == board.getHeight(),
+          cols_valid = cols.filter(function(value){return dict.contains(value);}).length == board.getWidth();
+      
+      return rows_valid && cols_valid;
+    }
     
     function GeneratePuzzle(width, height){
       var rows = [], cols = [], used = [];
@@ -500,12 +527,48 @@ square\:moving{
       }
       
       board.setValue(randomized);
+      ResetTimer();
+      StartTimer();
     }
     
-    (function Constructor(dictionary, board_frame, drop_frame){
+    function StartTimer(){
+      if(timer_isrunning) return;
+      timer_isrunning = true;
+      
+      if(timer_start == undefined) timer_start = Date.now();
+      timer_interval = setInterval(UpdateTimer, 1000);
+    }
+    function PauseTimer(){
+      if(!timer_isrunning) return;
+      timer_isrunning = false;
+      
+      clearInterval(timer_interval);
+    }
+    function ResetTimer(){
+      timer_start = Date.now();
+    }
+    function UpdateTimer(){
+      var difftime = Date.now() - timer_start,
+          hours   = Math.floor((difftime % (60*60*60*1000))/(60*60*1000)),
+          minutes = Math.floor((difftime % (   60*60*1000))/(   60*1000)),
+          seconds = Math.floor((difftime % (      60*1000))/(      1000));
+  
+      if(seconds < 10) seconds = '0'+seconds;
+      if(hours > 0) if(minutes < 10) minutes = '0'+minutes;
+  
+      if(hours > 0) timer.innerHTML = hours+':'+minutes+':'+seconds;
+      else timer.innerHTML = minutes+':'+seconds;
+    }
+    
+    (function Constructor(dictionary, board_frame, drop_frame, timer_frame){
       dict = dictionary;
+      
       board = new Board(board_frame);
+      board.addEventListener('snap', CheckPuzzle);
+      
       drop = new Board(drop_frame);
+      
+      timer = timer_frame;
     }).apply(this, arguments);
   }
   
@@ -534,7 +597,12 @@ square\:moving{
   
   function Init(){
     LoadDictionary(function Callback(dict){
-      var game = new Game(dict, document.querySelector('.board'), document.querySelector('.drop'));
+      var game = new Game(
+        dict,
+        document.querySelector('.board'),
+        document.querySelector('.drop'),
+        document.querySelector('.timer')
+      );
       game.create(4,4);
     });
   }
