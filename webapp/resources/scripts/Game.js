@@ -106,7 +106,9 @@
       return puzzle;
     }
     
-    function Create(width, height){
+    function Create(width, height, stationary_selector){
+      stationary_selector = stationary_selector || function(){return false;}
+      
       is_complete = false;
       
       board.resize(width, height);
@@ -118,17 +120,21 @@
       
       for(var y=0; y<board.getHeight(); y++)
         for(var x=0; x<board.getWidth(); x++)
-          if(x != y){
-            indices.push({x:x, y:y});
-          }else{
+          if(stationary_selector(x, y, board.getWidth(), board.getHeight()))
+          {
             if(!sudo_random[y]) sudo_random[y] = [];
-            sudo_random[y][x] = puzzle[y].splice(x, 1)[0];
+            sudo_random[y][x] = puzzle[y][x];
+          }else{
+            indices.push({x:x, y:y});
           }
       
-      var letters = puzzle.reduce(function(prev, value){return prev.concat(value);});
+      var letters = indices.concat([]);
       while(indices.length > 0){
-        var index = indices.splice(Math.floor(Math.random()*indices.length), 1)[0];
-        sudo_random[index.y][index.x] = letters.shift();
+        var index = indices.splice(Math.floor(Math.random()*indices.length), 1)[0],
+            letter_index = letters.shift(),
+            letter = puzzle[letter_index.y][letter_index.x];
+        if(!sudo_random[index.y]) sudo_random[index.y] = [];
+        sudo_random[index.y][index.x] = letter;
       }
       
       board.setValue(sudo_random);
@@ -136,7 +142,8 @@
       var cells = board.getCells();
       for(var y=0; y<board.getHeight(); y++)
         for(var x=0; x<board.getWidth(); x++)
-          if(x == y) cells[y][x].getSquare().setMovable(false);
+          if(stationary_selector(x, y, board.getWidth(), board.getHeight()))
+            cells[y][x].getSquare().setMovable(false);
       
       ResetTimer();
       StartTimer();

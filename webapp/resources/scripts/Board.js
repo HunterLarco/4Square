@@ -8,7 +8,7 @@
     var width, height;
     var frame;
   
-    var cells = [];
+    var cells = [], brs = [];
   
     self.resize = Resize;
     self.clear = Clear;
@@ -77,6 +77,9 @@
         for(var j=0,dest; dest=row[j++];)
           dest.remove();
     
+      for(var i=0,br; br=brs[i++];) frame.removeChild(br);
+      brs = [];
+      
       cells = [];
     }
     function CreateBoard(){
@@ -84,7 +87,10 @@
     
       for(var i=0; i<width*height; i++){
         if(i%width == 0 && i != 0){
-          frame.appendChild(document.createElement('br'));
+          var br = document.createElement('br');
+          brs.push(br);
+          frame.appendChild(br);
+          
           cells.push(row);
           row = [];
         }
