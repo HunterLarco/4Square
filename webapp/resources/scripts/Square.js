@@ -66,6 +66,7 @@
     }
     function Bind(){
       html.addEventListener('touchstart', PickUp);
+      html.addEventListener('mousedown', PickUp);
     }
     function PickUp(event){
       event.preventDefault();
@@ -74,8 +75,10 @@
       CreateMover(event);
       
       window.addEventListener('touchmove', OnMove);
+      window.addEventListener('mousemove', OnMove);
       window.addEventListener('touchcancel', PutDown);
       window.addEventListener('touchend', PutDown);
+      window.addEventListener('mouseup', PutDown);
     }
     function OnMove(event){
       event.preventDefault();
@@ -111,11 +114,15 @@
       UpdateMover(event);
     }
     function UpdateMover(event){
-      if(event.targetTouches.length == 0) return;
-      
-      var touches = event.targetTouches,
-          x = touches[0].clientX,
-          y = touches[0].clientY;
+      var x, y;
+      if(event.constructor == MouseEvent){
+        x = event.clientX;
+        y = event.clientY;
+      }else{
+        if(event.targetTouches.length == 0) return;
+        y = touches[0].clientY
+        x = touches[0].clientX
+      }
       
       if(touch == undefined){
         touch = {lx:x, ly:y};
